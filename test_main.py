@@ -65,3 +65,5 @@ def test_price_Check(price_Check):
 # Cerrar el driver al finalizar las pruebas
 def teardown_module():
     driver.quit()
+
+# pytest selenium-python --alluredir=report --junitxml=result.xml --html=report.html
