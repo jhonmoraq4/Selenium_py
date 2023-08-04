@@ -42,21 +42,25 @@ for button in buttons:
     print()
 
 @pytest.fixture(scope="session")
-def test_priceCheck():
+def price_Check():
     try:
         for button in buttons:
             button_text = button.get_attribute("innerHTML")
             print(button_text)
             assert expected_price_range in button_text, f"El rango de precio esperado no está presente en: {button_text}"
             print("Aserción exitosa:", button_text)
+            return True
     except AssertionError as e:
         print("Error en la aserción:", str(e))
+        return False
 
 
 # Marcar el fixture como prueba
-def test_api_request(test_priceCheck):
-    pass
-
+def test_price_Check(price_Check):
+    if price_Check == True:
+        pass
+    else:
+        pytest.fail("El test Fallo")
 
 # Cerrar el driver al finalizar las pruebas
 def teardown_module():
