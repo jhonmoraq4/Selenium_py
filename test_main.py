@@ -1,4 +1,5 @@
 import time
+import pytest
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
@@ -34,5 +35,29 @@ time.sleep(3)
 
 buttons = driver.find_elements("xpath","//a[.//span[text()[contains(., 'Pasta blanda')]]]//span[text()[contains(.,'$')]]")
 
+expected_price_range = "US$31.05 - US$39.99"
+
 for button in buttons:
     print(button.get_attribute("innerHTML"))
+    print()
+
+@pytest.fixture(scope="session")
+def test_priceCheck():
+    try:
+        for button in buttons:
+            button_text = button.get_attribute("innerHTML")
+            print(button_text)
+            assert expected_price_range in button_text, f"El rango de precio esperado no está presente en: {button_text}"
+            print("Aserción exitosa:", button_text)
+    except AssertionError as e:
+        print("Error en la aserción:", str(e))
+
+
+# Marcar el fixture como prueba
+def test_api_request(test_priceCheck):
+    pass
+
+
+# Cerrar el driver al finalizar las pruebas
+def teardown_module():
+    driver.quit()
